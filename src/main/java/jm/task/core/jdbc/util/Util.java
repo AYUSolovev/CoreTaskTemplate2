@@ -1,10 +1,13 @@
 package jm.task.core.jdbc.util;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Util {
     // реализуйте настройку соеденения с БД
 
+    private static Util instance;
     private static Connection connection;
 
     static {
@@ -17,8 +20,21 @@ public class Util {
         }
     }
 
+    private Util() {
+    }
 
-    public static Connection getConnection() {
+    public static Util getInstance() {
+        if (instance == null) {
+            synchronized (Util.class) {
+                if (instance == null) {
+                    instance = new Util();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public Connection getConnection() {
         return connection;
     }
 }

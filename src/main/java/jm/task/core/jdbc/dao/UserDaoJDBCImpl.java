@@ -20,8 +20,8 @@ public class UserDaoJDBCImpl implements UserDao {
                 .append("id int(10) not null auto_increment primary key, ")
                 .append("name varchar(50) not null, ")
                 .append("last_name varchar(50) not null, ")
-                 .append("age int(1) not null )");
-        try (Statement st = Util.getConnection().createStatement()) {
+                .append("age int(1) not null )");
+        try (Statement st = Util.getInstance().getConnection().createStatement()) {
             st.execute(query.toString());
         } catch (SQLException sqlE) {
             sqlE.printStackTrace();
@@ -29,10 +29,10 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        try (Statement st = Util.getConnection().createStatement()) {
+        try (Statement st = Util.getInstance().getConnection().createStatement()) {
             st.execute("drop table if exists users");
         } catch (SQLException sqlE) {
-            System.out.println("Не удалось удалить таблицу");
+            sqlE.printStackTrace();
         }
     }
 
@@ -41,27 +41,28 @@ public class UserDaoJDBCImpl implements UserDao {
                 .append("'").append(name).append("', ")
                 .append("'").append(lastName).append("', ")
                 .append(age).append(" )");
-        try (Statement st = Util.getConnection().createStatement()) {
+        try (Statement st = Util.getInstance().getConnection().createStatement()) {
             st.execute(strQuery.toString());
         } catch (SQLException sqlE) {
-            System.out.println("Не удалось добавить user");
+            sqlE.printStackTrace();
         }
     }
 
     public void removeUserById(long id) {
         StringBuilder query = new StringBuilder("delete from users where id = ")
                 .append(id);
-        try (Statement st = Util.getConnection().createStatement()) {
+        try (Statement st = Util.getInstance().getConnection().createStatement()) {
             st.execute(query.toString());
         } catch (SQLException sqlE) {
-            System.out.println("Не удалось удалить таблицу");
+            sqlE.printStackTrace();
         }
     }
 
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         StringBuilder query = new StringBuilder("select * from users");
-        try (Statement st = Util.getConnection().createStatement(); ResultSet rs = st.executeQuery(query.toString())) {
+        try (Statement st = Util.getInstance().getConnection().createStatement();
+             ResultSet rs = st.executeQuery(query.toString())) {
             User user;
             while (rs.next()) {
                 user = new User();
@@ -72,16 +73,16 @@ public class UserDaoJDBCImpl implements UserDao {
                 userList.add(user);
             }
         } catch (SQLException sqlE) {
-            System.out.println("Не удалось удалить таблицу");
+            sqlE.printStackTrace();
         }
         return userList;
     }
 
     public void cleanUsersTable() {
-        try (Statement st = Util.getConnection().createStatement()) {
+        try (Statement st = Util.getInstance().getConnection().createStatement()) {
             st.execute("truncate table users");
         } catch (SQLException sqlE) {
-            System.out.println("Не удалось очистить таблицу");
+            sqlE.printStackTrace();
         }
     }
 }
